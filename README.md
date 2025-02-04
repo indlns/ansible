@@ -1,3 +1,1 @@
-# ansible
-
-# Playbooks tests
+# Playbooks
