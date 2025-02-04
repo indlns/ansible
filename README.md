@@ -1,1 +1,3 @@
 # Playbooks
+
+Examples of playbooks
