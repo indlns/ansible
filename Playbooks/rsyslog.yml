@@ -1,3 +1,5 @@
+#### Пока не тестировал даже сам =)
+
 - name: Setup Rsyslog for Remote Logging
   hosts: all
   become: true
