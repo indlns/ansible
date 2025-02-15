@@ -4,7 +4,7 @@
   hosts: all
   become: true
   vars:
-    log_server_ip: "x.x.x.x"  # Укажите IP сервера логов или передавайте через `-e "log_server_ip=xxx.xxx.xxx.xxx"`
+    log_server_ip: "{{ logServer }}"  # Укажите IP сервера логов или передавайте через `-e "log_server_ip=xxx.xxx.xxx.xxx"`
 
   tasks:
     - name: Check if rsyslog is installed
@@ -21,10 +21,19 @@
       when: rsyslog_check.rc != 0
 
     - name: Uncomment UDP 514 port lines in /etc/rsyslog.conf
-      ansible.builtin.replace:
+      ansible.builtin.lineinfile:
         path: /etc/rsyslog.conf
-        regexp: '^#(.*514.*udp.*)'
-        replace: '\1'
+        regexp: '^#(module\(load="imudp"\))'
+        line: '\1'
+        backrefs: true
+      notify: Restart rsyslog
+
+    - name: Uncomment UDP 514 input line in /etc/rsyslog.conf
+      ansible.builtin.lineinfile:
+        path: /etc/rsyslog.conf
+        regexp: '^#(input\(type="imudp" port="514"\))'
+        line: '\1'
+        backrefs: true
       notify: Restart rsyslog
 
     - name: Ensure remote logging to Graylog server
